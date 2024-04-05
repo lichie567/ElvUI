@@ -1831,7 +1831,7 @@ function UF:Initialize()
 	UF.maxAllowedGroups = 8
 
 	UF.SPACING = (UF.thinBorders or E.twoPixelsPlease) and 0 or 1
-	UF.BORDER = (UF.thinBorders and not E.twoPixelsPlease) and 1 or 2
+	UF.BORDER = 0
 
 	if not E.private.unitframe.enable then return end
 	UF.Initialized = true

@@ -3814,17 +3814,19 @@ function CH:Initialize()
 		local insetLeft, insetRight, insetTop, insetBottom = editbox:GetTextInsets()
 		editbox:SetTextInsets(insetLeft, insetRight + 30, insetTop, insetBottom)
 		editbox:SetTemplate(nil, true)
+		editbox:SetBackdropBorderColor(0, 0, 0, 0)
+		editbox:SetBackdropColor(0, 0, 0, 0)
 
-		if chanIndex and (chatType == 'CHANNEL') then
-			if chanIndex == 0 then
-				editbox:SetBackdropBorderColor(unpack(E.media.bordercolor))
-			else
-				info = ChatTypeInfo[chatType..chanIndex]
-				editbox:SetBackdropBorderColor(info.r, info.g, info.b)
-			end
-		else
-			editbox:SetBackdropBorderColor(info.r, info.g, info.b)
-		end
+		-- if chanIndex and (chatType == 'CHANNEL') then
+		-- 	if chanIndex == 0 then
+		-- 		editbox:SetBackdropBorderColor(unpack(E.media.bordercolor))
+		-- 	else
+		-- 		info = ChatTypeInfo[chatType..chanIndex]
+		-- 		editbox:SetBackdropBorderColor(info.r, info.g, info.b)
+		-- 	end
+		-- else
+		-- 	editbox:SetBackdropBorderColor(info.r, info.g, info.b)
+		-- end
 	end)
 
 	--Chat Heads Frame

@@ -702,7 +702,7 @@ function M:Initialize()
 	Minimap:EnableMouseWheel(true)
 	Minimap:SetFrameLevel(10)
 	Minimap:SetFrameStrata('LOW')
-	Minimap:CreateBackdrop()
+	-- Minimap:CreateBackdrop()
 
 	if Minimap.backdrop then -- level to hybrid maps fixed values
 		Minimap.backdrop:SetFrameLevel(99)

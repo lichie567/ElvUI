@@ -92,16 +92,16 @@ function UF:Configure_ClassBar(frame)
 	local MAX_CLASS_BAR = frame.MAX_CLASS_BAR
 
 	--Fix height in case it is lower than the theme allows, or in case it's higher than 30px when not detached
-	if not UF.thinBorders and (frame.CLASSBAR_HEIGHT > 0 and frame.CLASSBAR_HEIGHT < 7) then --A height of 7 means 6px for borders and just 1px for the actual power statusbar
-		frame.CLASSBAR_HEIGHT = 7
-		if db.classbar then db.classbar.height = 7 end
-	elseif UF.thinBorders and (frame.CLASSBAR_HEIGHT > 0 and frame.CLASSBAR_HEIGHT < 3) then --A height of 3 means 2px for borders and just 1px for the actual power statusbar
-		frame.CLASSBAR_HEIGHT = 3
-		if db.classbar then db.classbar.height = 3 end
-	elseif not frame.CLASSBAR_DETACHED and frame.CLASSBAR_HEIGHT > 30 then
-		frame.CLASSBAR_HEIGHT = 10
-		if db.classbar then db.classbar.height = 10 end
-	end
+	-- if not UF.thinBorders and (frame.CLASSBAR_HEIGHT > 0 and frame.CLASSBAR_HEIGHT < 7) then --A height of 7 means 6px for borders and just 1px for the actual power statusbar
+	-- 	frame.CLASSBAR_HEIGHT = 7
+	-- 	if db.classbar then db.classbar.height = 7 end
+	-- elseif UF.thinBorders and (frame.CLASSBAR_HEIGHT > 0 and frame.CLASSBAR_HEIGHT < 3) then --A height of 3 means 2px for borders and just 1px for the actual power statusbar
+	-- 	frame.CLASSBAR_HEIGHT = 3
+	-- 	if db.classbar then db.classbar.height = 3 end
+	-- elseif not frame.CLASSBAR_DETACHED and frame.CLASSBAR_HEIGHT > 30 then
+	-- 	frame.CLASSBAR_HEIGHT = 10
+	-- 	if db.classbar then db.classbar.height = 10 end
+	-- end
 
 	--We don't want to modify the original frame.CLASSBAR_WIDTH value, as it bugs out when the classbar gains more buttons
 	local CLASSBAR_WIDTH = E:Scale(frame.CLASSBAR_WIDTH)

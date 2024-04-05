@@ -116,6 +116,7 @@ end
 -- isPercent (boolean) - represent e.g. 1.0 as 100%, etc. (default=false)
 
 function ACH:Range(name, desc, order, values, width, get, set, disabled, hidden)
+	if values then values.step = 0.1 end
 	local optionTable = { type = 'range', name = name, desc = desc, order = order, get = get, set = set, disabled = disabled, hidden = hidden }
 
 	if width then insertWidth(optionTable, width) end
