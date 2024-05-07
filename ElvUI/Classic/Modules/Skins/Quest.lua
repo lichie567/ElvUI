@@ -3,12 +3,10 @@ local S = E:GetModule('Skins')
 
 local _G = _G
 local unpack, gsub = unpack, gsub
-local pairs, next = pairs, next
-local strmatch = strmatch
+local pairs, next, strmatch = pairs, next, strmatch
+local hooksecurefunc = hooksecurefunc
 
 local GetMoney = GetMoney
-local GetItemInfo = GetItemInfo
-local GetItemQualityColor = GetItemQualityColor
 local GetNumQuestLeaderBoards = GetNumQuestLeaderBoards
 local GetNumQuestLogEntries = GetNumQuestLogEntries
 local GetQuestItemLink = GetQuestItemLink
@@ -18,7 +16,9 @@ local GetQuestLogRequiredMoney = GetQuestLogRequiredMoney
 local GetQuestLogTitle = GetQuestLogTitle
 local GetQuestMoneyToGet = GetQuestMoneyToGet
 local IsQuestComplete = IsQuestComplete
-local hooksecurefunc = hooksecurefunc
+
+local GetItemQualityByID = C_Item.GetItemQualityByID
+local GetItemQualityColor = C_Item.GetItemQualityColor or GetItemQualityColor
 
 local MAX_NUM_ITEMS = MAX_NUM_ITEMS
 local MAX_NUM_QUESTS = MAX_NUM_QUESTS
@@ -80,7 +80,7 @@ local function questQualityColors(frame, text, link)
 		handleItemButton(frame)
 	end
 
-	local _, _, quality = GetItemInfo(link or 0)
+	local quality = GetItemQualityByID(link or 0)
 	if quality and quality > 1 then
 		local r, g, b = GetItemQualityColor(quality)
 		text:SetTextColor(r, g, b)

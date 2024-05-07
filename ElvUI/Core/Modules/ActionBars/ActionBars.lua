@@ -46,9 +46,9 @@ local NUM_ACTIONBAR_BUTTONS = NUM_ACTIONBAR_BUTTONS
 local COOLDOWN_TYPE_LOSS_OF_CONTROL = COOLDOWN_TYPE_LOSS_OF_CONTROL
 local CLICK_BINDING_NOT_AVAILABLE = CLICK_BINDING_NOT_AVAILABLE
 
-local C_ActionBar_GetProfessionQuality = C_ActionBar and C_ActionBar.GetProfessionQuality
-local C_PetBattles_IsInBattle = C_PetBattles and C_PetBattles.IsInBattle
-local C_PlayerInfo_GetGlidingInfo = C_PlayerInfo and C_PlayerInfo.GetGlidingInfo
+local GetProfessionQuality = C_ActionBar.GetProfessionQuality
+local IsInBattle = C_PetBattles and C_PetBattles.IsInBattle
+local GetGlidingInfo = C_PlayerInfo.GetGlidingInfo
 local ClearPetActionHighlightMarks = ClearPetActionHighlightMarks or PetActionBar.ClearPetActionHighlightMarks
 local ActionBarController_UpdateAllSpellHighlights = ActionBarController_UpdateAllSpellHighlights
 
@@ -91,7 +91,7 @@ AB.barDefaults = {
 
 do
 	-- https://github.com/Gethe/wow-ui-source/blob/6eca162dbca161e850b735bd5b08039f96caf2df/Interface/FrameXML/OverrideActionBar.lua#L136
-	local fullConditions = (E.Retail or E.Wrath) and format('[overridebar] %d; [vehicleui][possessbar] %d;', GetOverrideBarIndex(), GetVehicleBarIndex()) or ''
+	local fullConditions = (E.Retail or E.Cata) and format('[overridebar] %d; [vehicleui][possessbar] %d;', GetOverrideBarIndex(), GetVehicleBarIndex()) or ''
 	AB.barDefaults.bar1.conditions = fullConditions..format('[shapeshift] %d; [bar:2] 2; [bar:3] 3; [bar:4] 4; [bar:5] 5; [bar:6] 6; [bonusbar:5] 11;', GetTempShapeshiftBarIndex())
 end
 
@@ -290,7 +290,7 @@ function AB:PositionAndSizeBar(barName)
 
 	local _, horizontal, anchorUp, anchorLeft = AB:GetGrowth(point)
 	local button, lastButton, lastColumnButton, anchorRowButton, lastShownButton
-	local vehicleIndex = (E.Retail or E.Wrath) and GetVehicleBarIndex()
+	local vehicleIndex = (E.Retail or E.Cata) and GetVehicleBarIndex()
 
 	-- paging needs to be updated even if the bar is disabled
 	local defaults = AB.barDefaults[barName]
@@ -459,7 +459,7 @@ function AB:PLAYER_REGEN_ENABLED()
 		AB.NeedsReparentExtraButtons = nil
 	end
 
-	if E.Wrath then
+	if E.Cata then
 		if AB.NeedsPositionAndSizeTotemBar then
 			AB:PositionAndSizeTotemBar()
 			AB.NeedsPositionAndSizeTotemBar = nil
@@ -540,7 +540,7 @@ function AB:ReassignBindings(event)
 			AB:UpdateExtraBindings()
 		end
 
-		if E.Wrath and E.myclass == 'SHAMAN' then
+		if E.Cata and E.myclass == 'SHAMAN' then
 			AB:UpdateTotemBindings()
 		end
 	end
@@ -659,7 +659,7 @@ function AB:UpdateButtonSettings(specific)
 			if LAB.FlyoutButtons then
 				AB:LAB_FlyoutSpells()
 			end
-		elseif (E.Wrath and E.myclass == 'SHAMAN') and AB.db.totemBar.enable then
+		elseif (E.Cata and E.myclass == 'SHAMAN') and AB.db.totemBar.enable then
 			AB:PositionAndSizeTotemBar()
 		end
 	end
@@ -781,7 +781,7 @@ function AB:UpdateProfessionQuality(button)
 	local enable = db and db.enable
 	if enable then
 		local action = button._state_type == 'action' and button._state_action
-		local quality = action and IsItemAction(action) and C_ActionBar_GetProfessionQuality(action)
+		local quality = action and IsItemAction(action) and GetProfessionQuality(action)
 		atlas = quality and format('Professions-Icon-Quality-Tier%d', quality)
 
 		if atlas then
@@ -890,9 +890,9 @@ end
 
 do
 	local function CanGlide()
-		if not C_PlayerInfo_GetGlidingInfo then return end
+		if not GetGlidingInfo then return end
 
-		local _, canGlide = C_PlayerInfo_GetGlidingInfo()
+		local _, canGlide = GetGlidingInfo()
 		return canGlide
 	end
 
@@ -1087,11 +1087,11 @@ do
 	}
 
 	local untaintButtons = {
-		MultiCastActionButton = (E.Wrath and E.myclass ~= 'SHAMAN') or nil,
-		OverrideActionBarButton = E.Wrath or nil
+		MultiCastActionButton = (E.Cata and E.myclass ~= 'SHAMAN') or nil,
+		OverrideActionBarButton = E.Cata or nil
 	}
 
-	if E.Wrath then -- Wrath TotemBar needs to be handled by us
+	if E.Cata then -- Wrath TotemBar needs to be handled by us
 		_G.UIPARENT_MANAGED_FRAME_POSITIONS.MultiCastActionBarFrame = nil
 	end
 
@@ -1219,7 +1219,7 @@ do
 			end
 		end
 
-		if E.Retail or E.Wrath then
+		if E.Retail or E.Cata then
 			if _G.PlayerTalentFrame then
 				_G.PlayerTalentFrame:UnregisterEvent('ACTIVE_TALENT_GROUP_CHANGED')
 			else
@@ -1696,7 +1696,7 @@ end
 function AB:PLAYER_ENTERING_WORLD(event, initLogin, isReload)
 	AB:AdjustMaxStanceButtons(event)
 
-	if (initLogin or isReload) and (E.Wrath and E.myclass == 'SHAMAN') and AB.db.totemBar.enable then
+	if (initLogin or isReload) and (E.Cata and E.myclass == 'SHAMAN') and AB.db.totemBar.enable then
 		AB:SecureHook('ShowMultiCastActionBar', 'PositionAndSizeTotemBar')
 		AB:PositionAndSizeTotemBar()
 	end
@@ -1750,7 +1750,7 @@ function AB:Initialize()
 		AB.fadeParent:RegisterEvent('PLAYER_CAN_GLIDE_CHANGED')
 	end
 
-	if E.Retail or E.Wrath then
+	if E.Retail or E.Cata then
 		AB.fadeParent:RegisterEvent('VEHICLE_UPDATE')
 		AB.fadeParent:RegisterUnitEvent('UNIT_ENTERED_VEHICLE', 'player')
 		AB.fadeParent:RegisterUnitEvent('UNIT_EXITED_VEHICLE', 'player')
@@ -1791,7 +1791,7 @@ function AB:Initialize()
 		AB:RegisterEvent('PET_BATTLE_OPENING_DONE', 'RemoveBindings')
 	end
 
-	if (E.Wrath and E.myclass == 'SHAMAN') and AB.db.totemBar.enable then
+	if (E.Cata and E.myclass == 'SHAMAN') and AB.db.totemBar.enable then
 		AB:CreateTotemBar()
 	end
 
@@ -1799,7 +1799,7 @@ function AB:Initialize()
 		AB:ADDON_LOADED(nil, 'Blizzard_MacroUI')
 	end
 
-	if E.Retail and C_PetBattles_IsInBattle() then
+	if E.Retail and IsInBattle() then
 		AB:RemoveBindings()
 	else
 		AB:ReassignBindings()

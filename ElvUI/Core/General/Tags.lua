@@ -35,6 +35,7 @@ local QuestDifficultyColors = QuestDifficultyColors
 local UnitBattlePetLevel = UnitBattlePetLevel
 local UnitClassification = UnitClassification
 local UnitDetailedThreatSituation = UnitDetailedThreatSituation
+local UnitThreatPercentageOfLead = UnitThreatPercentageOfLead
 local UnitExists = UnitExists
 local UnitFactionGroup = UnitFactionGroup
 local UnitGetIncomingHeals = UnitGetIncomingHeals
@@ -124,7 +125,7 @@ Tags.SharedEvents.QUEST_LOG_UPDATE = true
 ------------------------------------------------------------------------
 
 Tags.Env.UnitEffectiveLevel = function(unit)
-	if E.Retail or E.Wrath then
+	if E.Retail or E.Cata then
 		return _G.UnitEffectiveLevel(unit)
 	else
 		return UnitLevel(unit)
@@ -206,7 +207,7 @@ Tags.Env.GetClassPower = function(unit)
 
 		if Min > 0 then
 			local power = ElvUF.colors.ClassBars[unitClass]
-			local color = (monk and power[Min]) or (dk and (E.Wrath and ElvUF.colors.class.DEATHKNIGHT or power[spec ~= 5 and spec or 1])) or power
+			local color = (monk and power[Min]) or (dk and (E.Cata and ElvUF.colors.class.DEATHKNIGHT or power[spec ~= 5 and spec or 1])) or power
 			r, g, b = color.r, color.g, color.b
 		end
 	elseif not r then
@@ -624,6 +625,13 @@ E:AddTag('realm:dash:translit', 'UNIT_NAME_UPDATE', function(unit)
 		return format('-%s', realm)
 	elseif realm ~= '' then
 		return realm
+	end
+end)
+
+E:AddTag('threat:lead', 'UNIT_THREAT_LIST_UPDATE UNIT_THREAT_SITUATION_UPDATE GROUP_ROSTER_UPDATE', function(unit)
+	local percent = UnitThreatPercentageOfLead('player', unit)
+	if percent and percent > 0 and (IsInGroup() or UnitExists('pet')) then
+		return format('%.0f%%', percent)
 	end
 end)
 
@@ -1286,7 +1294,7 @@ E:AddTag('loyalty', 'UNIT_HAPPINESS PET_UI_UPDATE', function(unit)
 	end
 end, not E.Classic)
 
-if not E.Retail then
+if E.Classic then
 	local GetPetHappiness = GetPetHappiness
 	local GetPetFoodTypes = GetPetFoodTypes
 
@@ -1336,7 +1344,9 @@ if not E.Retail then
 			return GetPetFoodTypes()
 		end
 	end)
+end
 
+if not E.Retail then
 	E:AddTag('pvp:title', 'UNIT_NAME_UPDATE', function(unit)
 		if UnitIsPlayer(unit) then
 			local rank = UnitPVPRank(unit)
@@ -1422,9 +1432,9 @@ E.TagInfo = {
 		['classpower:current-percent:shortvalue'] = { hidden = E.Classic, category = 'Classpower', description = "" },
 		['classpower:current:shortvalue'] = { hidden = E.Classic, category = 'Classpower', description = "" },
 		['classpower:deficit:shortvalue'] = { hidden = E.Classic, category = 'Classpower', description = "" },
-		['holypower'] = { hidden = not E.Retail, category = 'Classpower', description = "Displays the holy power (Paladin)" },
+		['holypower'] = { hidden = E.Classic, category = 'Classpower', description = "Displays the holy power (Paladin)" },
 		['runes'] = { hidden = E.Classic, category = 'Classpower', description = "Displays the runes (Death Knight)" },
-		['soulshards'] = { hidden = not E.Retail, category = 'Classpower', description = "Displays the soulshards (Warlock)" },
+		['soulshards'] = { hidden = E.Classic, category = 'Classpower', description = "Displays the soulshards (Warlock)" },
 	-- Colors
 		['altpowercolor'] = { hidden = not E.Retail, category = 'Colors', description = "Changes the text color to the current alternative power color (Blizzard defined)" },
 		['classificationcolor'] = { category = 'Colors', description = "Changes the text color, depending on the unit's classification" },
@@ -1649,6 +1659,7 @@ E.TagInfo = {
 	-- Threat
 		['threat:current'] = { category = 'Threat', description = "Displays the current threat as a value" },
 		['threat:percent'] = { category = 'Threat', description = "Displays the current threat as a percent" },
+		['threat:lead'] = { category = 'Threat', description = "Displays the current threat of lead as a percent" },
 		['threat'] = { category = 'Threat', description = "Displays the current threat situation (Aggro is secure tanking, -- is losing threat and ++ is gaining threat)" },
 }
 

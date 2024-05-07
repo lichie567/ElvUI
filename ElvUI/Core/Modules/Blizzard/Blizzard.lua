@@ -95,7 +95,7 @@ function BL:ObjectiveTracker_HasQuestTracker()
 end
 
 function BL:ObjectiveTracker_AutoHide()
-	local tracker = (E.Wrath and _G.WatchFrame) or _G.ObjectiveTrackerFrame
+	local tracker = (E.Cata and _G.WatchFrame) or _G.ObjectiveTrackerFrame
 	if not tracker then return end
 
 	if not tracker.AutoHider then
@@ -130,19 +130,8 @@ function BL:Initialize()
 
 	BL:RegisterEvent('ADDON_LOADED')
 
-	if not E.Retail then
-		BL:KillBlizzard()
-	else
-		BL:DisableHelpTip()
-		BL:DisableTutorials()
+	if not E.Classic then
 		BL:SkinBlizzTimers()
-		BL:HandleTalkingHead()
-		BL:HandleAddonCompartment()
-
-		E:CreateMover(_G.LossOfControlFrame, 'LossControlMover', L["Loss Control Icon"])
-
-		--Add (+X%) to quest rewards experience text
-		BL:SecureHook('QuestInfo_Display', 'QuestXPPercent')
 
 		if not E:IsAddOnEnabled('SimplePowerBar') then
 			BL:PositionAltPowerBar()
@@ -150,7 +139,21 @@ function BL:Initialize()
 		end
 	end
 
-	if E.Wrath then
+	if not E.Retail then
+		BL:KillBlizzard()
+	else
+		BL:DisableHelpTip()
+		BL:DisableTutorials()
+		BL:HandleTalkingHead()
+		BL:HandleAddonCompartment()
+
+		E:CreateMover(_G.LossOfControlFrame, 'LossControlMover', L["Loss Control Icon"])
+
+		--Add (+X%) to quest rewards experience text
+		BL:SecureHook('QuestInfo_Display', 'QuestXPPercent')
+	end
+
+	if E.Cata then
 		BL:PositionVehicleFrame()
 	end
 

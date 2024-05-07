@@ -3,14 +3,15 @@ local S = E:GetModule('Skins')
 
 local _G = _G
 local unpack = unpack
+local hooksecurefunc = hooksecurefunc
 
-local GetItemInfo = GetItemInfo
 local GetCraftNumReagents = GetCraftNumReagents
-local GetItemQualityColor = GetItemQualityColor
 local GetCraftItemLink = GetCraftItemLink
 local GetCraftReagentInfo = GetCraftReagentInfo
 local GetCraftReagentItemLink = GetCraftReagentItemLink
-local hooksecurefunc = hooksecurefunc
+
+local GetItemQualityByID = C_Item.GetItemQualityByID
+local GetItemQualityColor = C_Item.GetItemQualityColor or GetItemQualityColor
 
 function S:SkinCraft()
 	if not (E.private.skins.blizzard.enable and E.private.skins.blizzard.craft) then return end
@@ -105,7 +106,7 @@ function S:SkinCraft()
 
 		local skillLink = GetCraftItemLink(id)
 		if skillLink then
-			local _, _, quality = GetItemInfo(skillLink)
+			local quality = GetItemQualityByID(skillLink)
 			if quality and quality > 1 then
 				local r, g, b = GetItemQualityColor(quality)
 				CraftIcon.backdrop:SetBackdropBorderColor(r, g, b)
@@ -117,14 +118,14 @@ function S:SkinCraft()
 		end
 
 		local numReagents = GetCraftNumReagents(id)
-		for i = 1, numReagents, 1 do
+		for i = 1, numReagents do
 			local _, _, reagentCount, playerReagentCount = GetCraftReagentInfo(id, i)
 			local reagentLink = GetCraftReagentItemLink(id, i)
 			local icon = _G['CraftReagent'..i..'IconTexture']
 			local name = _G['CraftReagent'..i..'Name']
 
 			if reagentLink then
-				local _, _, quality = GetItemInfo(reagentLink)
+				local quality = GetItemQualityByID(reagentLink)
 				if quality and quality > 1 then
 					if playerReagentCount < reagentCount then
 						name:SetTextColor(0.5, 0.5, 0.5)

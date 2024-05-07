@@ -2,16 +2,13 @@ local E, L, V, P, G = unpack(ElvUI)
 local S = E:GetModule('Skins')
 
 local _G = _G
-local unpack = unpack
-local select = select
-local ipairs = ipairs
-local next = next
-local rad = rad
+local unpack, select = unpack, select
+local ipairs, next, rad = ipairs, next, rad
+local hooksecurefunc = hooksecurefunc
 
 local CreateFrame = CreateFrame
-local GetItemInfo = GetItemInfo
-local hooksecurefunc = hooksecurefunc
-local GetItemQualityColor = GetItemQualityColor
+local GetItemQualityByID = C_Item.GetItemQualityByID
+local GetItemQualityColor = C_Item.GetItemQualityColor or GetItemQualityColor
 
 local lootQuality = {
 	['loottab-set-itemborder-white'] = nil, -- dont show white
@@ -231,15 +228,18 @@ function S:Blizzard_EncounterJournal()
 	end
 
 	_G.EncounterJournalMonthlyActivitiesTab:ClearAllPoints()
-	_G.EncounterJournalSuggestTab:ClearAllPoints()
-	_G.EncounterJournalDungeonTab:ClearAllPoints()
-	_G.EncounterJournalRaidTab:ClearAllPoints()
-	_G.EncounterJournalLootJournalTab:ClearAllPoints()
-
 	_G.EncounterJournalMonthlyActivitiesTab:Point('TOPLEFT', _G.EncounterJournal, 'BOTTOMLEFT', -3, 0)
+
+	_G.EncounterJournalSuggestTab:ClearAllPoints()
 	_G.EncounterJournalSuggestTab:Point('LEFT', _G.EncounterJournalMonthlyActivitiesTab, 'RIGHT', -5, 0)
+
+	_G.EncounterJournalDungeonTab:ClearAllPoints()
 	_G.EncounterJournalDungeonTab:Point('LEFT', _G.EncounterJournalSuggestTab, 'RIGHT', -5, 0)
+
+	_G.EncounterJournalRaidTab:ClearAllPoints()
 	_G.EncounterJournalRaidTab:Point('LEFT', _G.EncounterJournalDungeonTab, 'RIGHT', -5, 0)
+
+	_G.EncounterJournalLootJournalTab:ClearAllPoints()
 	_G.EncounterJournalLootJournalTab:Point('LEFT', _G.EncounterJournalRaidTab, 'RIGHT', -5, 0)
 
 	--Encounter Info Frame
@@ -447,7 +447,7 @@ function S:Blizzard_EncounterJournal()
 
 				local r, g, b = unpack(E.media.bordercolor)
 				if rewardData.itemID then
-					local _, _, quality = GetItemInfo(rewardData.itemID)
+					local quality = GetItemQualityByID(rewardData.itemID)
 					if quality and quality > 1 then
 						r, g, b = GetItemQualityColor(quality)
 					end

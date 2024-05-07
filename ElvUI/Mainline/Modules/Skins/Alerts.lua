@@ -3,13 +3,14 @@ local S = E:GetModule('Skins')
 
 local _G = _G
 local next = next
+local hooksecurefunc = hooksecurefunc
 local unpack, select = unpack, select
 
 local CreateFrame = CreateFrame
-local GetItemInfo = GetItemInfo
+local GetItemQualityByID = C_Item.GetItemQualityByID
 local SetLargeGuildTabardTextures = SetLargeGuildTabardTextures
+
 local ITEM_QUALITY_COLORS = ITEM_QUALITY_COLORS
-local hooksecurefunc = hooksecurefunc
 
 local function forceAlpha(self, alpha, forced)
 	if alpha ~= 1 and forced ~= true then
@@ -529,7 +530,7 @@ local function SkinLegendaryItemAlert(frame, itemLink)
 		frame.isSkinned = true
 	end
 
-	local _, _, itemRarity = GetItemInfo(itemLink)
+	local itemRarity = GetItemQualityByID(itemLink)
 	local color = itemRarity and ITEM_QUALITY_COLORS[itemRarity]
 	if color then
 		frame.Icon.b:SetBackdropBorderColor(color.r, color.g, color.b)
